@@ -1,0 +1,23 @@
+{
+  "name": "meetnira",
+  "version": "1.0.0",
+  "description": "MeetNira Donobu regression — Task 1 (core) + Task 2 (stability 5×)",
+  "scripts": {
+    "test": "MEETNIRA_TASK1_DIR=\"$PWD/tasks/Task-1-Risk-Based-Minimum-Regression-Suite\" MEETNIRA_REPO_ROOT=\"$PWD\" donobu test --config=tasks/Task-1-Risk-Based-Minimum-Regression-Suite/playwright.config.ts",
+    "test:task-1": "npm test",
+    "test:headless": "MEETNIRA_HEADLESS=1 MEETNIRA_TASK1_DIR=\"$PWD/tasks/Task-1-Risk-Based-Minimum-Regression-Suite\" MEETNIRA_REPO_ROOT=\"$PWD\" donobu test --config=tasks/Task-1-Risk-Based-Minimum-Regression-Suite/playwright.config.ts",
+    "stability:5x": "bash tasks/Task-2-Stability-Run-1-Before-Code-Changes/run-stability-5x.sh",
+    "stability:report": "node tasks/Task-2-Stability-Run-1-Before-Code-Changes/generate-stability-email-report.mjs",
+    "report:task-1": "playwright show-report tasks/Task-1-Risk-Based-Minimum-Regression-Suite/playwright-report",
+    "report:task-2": "playwright show-report tasks/Task-2-Stability-Run-1-Before-Code-Changes/playwright-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.5.2",
+    "donobu": "^5.21.3",
+    "dotenv": "^17.4.0"
+  }
+}

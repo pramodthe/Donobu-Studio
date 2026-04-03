@@ -1,0 +1,13 @@
+node_modules/
+.env
+.DS_Store
+*.log
+.cache/
+
+# Generated artifacts (any task or root)
+**/test-results/
+**/playwright-report/
+reports/
+blob-report/
+playwright/.auth/*.json
+!playwright/.auth/.gitkeep

@@ -1,0 +1,9 @@
+{
+  "name": "meetnira-task-1-risk-based-minimum-regression-suite",
+  "private": true,
+  "description": "Run from this folder: npm test (requires repo-root npm install)",
+  "scripts": {
+    "test": "bash ./run-tests.sh",
+    "report": "playwright show-report playwright-report"
+  }
+}

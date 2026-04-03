@@ -1,0 +1,10 @@
+{
+  "name": "meetnira-task-2-stability-run-1",
+  "private": true,
+  "description": "Five-run stability harness; outputs under ./reports (requires repo-root npm install)",
+  "scripts": {
+    "stability:5x": "bash ./run-stability-5x.sh",
+    "stability:report": "node ./generate-stability-email-report.mjs",
+    "report": "playwright show-report playwright-report"
+  }
+}
