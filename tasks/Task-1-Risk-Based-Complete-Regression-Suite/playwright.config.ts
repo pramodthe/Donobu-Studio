@@ -1,30 +1,41 @@
 import path from 'node:path';
 import dotenv from 'dotenv';
+import os from 'node:os';
 import { defineConfig, devices } from 'donobu';
 
-const taskDir =
-  process.env.MEETNIRA_TASK2_DIR ??
-  path.join(process.cwd(), 'tasks', 'Task-2-Stability-Run-1-Before-Code-Changes');
-const repoRoot = process.env.MEETNIRA_REPO_ROOT ?? process.cwd();
-
+const taskRoot =
+  process.env.MEETNIRA_TASK1_DIR ??
+  path.join(process.cwd(), 'tasks', 'Task-1-Risk-Based-Complete-Regression-Suite');
+const repoRoot =
+  process.env.MEETNIRA_REPO_ROOT ?? path.resolve(taskRoot, '..', '..');
 dotenv.config({ path: path.join(repoRoot, '.env') });
 
+const parallelWorkers = Math.min(
+  8,
+  Math.max(2, typeof os.availableParallelism === 'function' ? os.availableParallelism() : os.cpus().length),
+);
+
 const baseURL = process.env.MEETNIRA_BASE_URL ?? 'https://meetnira.com';
+const isProductionTarget = /^https:\/\/meetnira\.com\/?$/i.test(baseURL);
 const configuredWorkers = Number(process.env.MEETNIRA_WORKERS);
 const workers =
   Number.isFinite(configuredWorkers) && configuredWorkers > 0
     ? configuredWorkers
-    : 2;
+    : process.env.CI
+      ? 4
+      : isProductionTarget
+        ? 1
+        : parallelWorkers;
 
+/** Visible browser windows locally; headless in CI or when MEETNIRA_HEADLESS=1 */
 const headless =
   Boolean(process.env.CI) ||
   process.env.MEETNIRA_HEADLESS === '1' ||
   process.env.MEETNIRA_HEADLESS === 'true';
 
-/** Representative Task 2 matrix with visible local Chromium workers by default. */
 export default defineConfig({
   testDir: './tests',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers,
@@ -41,10 +52,10 @@ export default defineConfig({
   },
   reporter: [
     ['list', { printSteps: true }],
-    ['json', { outputFile: path.join(taskDir, 'reports', 'last-run.json') }],
-    ['html', { outputFolder: path.join(taskDir, 'playwright-report'), open: 'never' }],
+    ['json', { outputFile: path.join(taskRoot, 'reports', 'playwright-report.json') }],
+    ['html', { outputFolder: path.join(taskRoot, 'playwright-report'), open: 'never' }],
   ],
-  outputDir: path.join(taskDir, 'test-results'),
+  outputDir: path.join(taskRoot, 'test-results'),
   projects: [
     {
       name: 'chromium',

@@ -1,0 +1,11 @@
+{
+  "name": "meetnira-task-3-stability-run-2",
+  "private": true,
+  "description": "Representative headed stability matrix after code changes",
+  "scripts": {
+    "stability:after": "bash ./run-stability-matrix.sh",
+    "stability:after:headless": "MEETNIRA_HEADLESS=1 bash ./run-stability-matrix.sh",
+    "stability:report": "node ./generate-stability-email-report.mjs",
+    "report": "playwright show-report playwright-report"
+  }
+}

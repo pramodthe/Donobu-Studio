@@ -1,8 +1,10 @@
 node_modules/
+.playwright-mcp/
 .env
 .DS_Store
 *.log
 .cache/
+**/tests/.cache-lock/
 
 # Generated artifacts (any task or root)
 **/test-results/

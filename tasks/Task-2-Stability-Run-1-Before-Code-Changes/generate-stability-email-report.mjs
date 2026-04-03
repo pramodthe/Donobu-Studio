@@ -1,7 +1,5 @@
 #!/usr/bin/env node
-/**
- * Task 2 — reads ./reports/stability-raw/run-{1..5}.json, writes ./reports/STABILITY_EMAIL_REPORT.md
- */
+/** Task 2 — reads ./reports/stability-raw/run-*.json, writes ./reports/STABILITY_EMAIL_REPORT.md */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -69,22 +67,27 @@ function summarizeRun(rows) {
 
 function main() {
   const runs = [];
-  for (let i = 1; i <= 5; i += 1) {
-    const fp = path.join(RAW_DIR, `run-${i}.json`);
-    if (!fs.existsSync(fp)) {
-      runs.push({ index: i, missing: true, summary: null, rows: [] });
-      continue;
-    }
+  const runFiles = fs.existsSync(RAW_DIR)
+    ? fs
+        .readdirSync(RAW_DIR, { withFileTypes: true })
+        .filter((entry) => entry.isFile() && /^run-\d+\.json$/.test(entry.name))
+        .map((entry) => entry.name)
+        .sort((a, b) => Number(a.match(/\d+/)?.[0] || 0) - Number(b.match(/\d+/)?.[0] || 0))
+    : [];
+
+  for (const fileName of runFiles) {
+    const index = Number(fileName.match(/\d+/)?.[0] || 0);
+    const fp = path.join(RAW_DIR, fileName);
     const raw = fs.readFileSync(fp, 'utf8');
     let report;
     try {
       report = JSON.parse(raw);
     } catch {
-      runs.push({ index: i, missing: true, parseError: true, summary: null, rows: [] });
+      runs.push({ index, missing: true, parseError: true, summary: null, rows: [] });
       continue;
     }
     const rows = collectResults(report);
-    runs.push({ index: i, missing: false, summary: summarizeRun(rows), rows });
+    runs.push({ index, missing: false, summary: summarizeRun(rows), rows });
   }
 
   const present = runs.filter((r) => r.summary);
@@ -130,11 +133,9 @@ function main() {
   lines.push('');
   lines.push('## Subject line suggestion');
   lines.push('');
-  lines.push(
-    `[MeetNira QA] Task 2 stability 5× — ${trend} — runs with data: ${present.length}/5`,
-  );
+  lines.push(`[MeetNira QA] Task 2 stability matrix — ${trend} — runs with data: ${present.length}`);
   lines.push('');
-  lines.push('## Pass / fail counts per run (Chromium — Task 1 suite)');
+  lines.push('## Pass / fail counts per run (Chromium — Task 2 matrix)');
   lines.push('');
   lines.push('| Run | Total results | Passed | Failed | Skipped | Interrupted / timedOut |');
   lines.push('|-----|---------------|--------|--------|---------|-------------------------|');
@@ -161,10 +162,10 @@ function main() {
     lines.push('');
   }
   if (topPatterns.length) {
-    lines.push('## Repeated failure patterns (same test failed in 2+ runs)');
+    lines.push('## Repeated failure patterns (same scenario failed in 2+ runs)');
     lines.push('');
     for (const [key, n] of topPatterns) {
-      lines.push(`- **${n}/5** — ${key}`);
+      lines.push(`- **${n}/${present.length}** — ${key}`);
     }
     lines.push('');
   }
@@ -182,7 +183,9 @@ function main() {
   lines.push('');
   lines.push('## How this was produced');
   lines.push('');
-  lines.push('- Repo root: `npm run stability:5x` — or `./run-stability-5x.sh` from this folder');
+  lines.push('- Repo root: `npm run stability:matrix` — or `./run-stability-5x.sh` from this folder');
+  lines.push('- Local default: headed Chromium with 2 workers so multiple browser windows stay visible');
+  lines.push('- Override passes: `MEETNIRA_TASK2_PASSES=<n> npm run stability:matrix`');
   lines.push('- Raw JSON: `./reports/stability-raw/run-*.json`');
   lines.push('- Regenerate: `npm run stability:report` (root) or `node generate-stability-email-report.mjs` here');
   lines.push('');

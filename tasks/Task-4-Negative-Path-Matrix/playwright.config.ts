@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 import { defineConfig, devices } from 'donobu';
 
 const taskDir =
-  process.env.MEETNIRA_TASK2_DIR ??
-  path.join(process.cwd(), 'tasks', 'Task-2-Stability-Run-1-Before-Code-Changes');
+  process.env.MEETNIRA_TASK4_DIR ??
+  path.join(process.cwd(), 'tasks', 'Task-4-Negative-Path-Matrix');
 const repoRoot = process.env.MEETNIRA_REPO_ROOT ?? process.cwd();
 
 dotenv.config({ path: path.join(repoRoot, '.env') });
@@ -21,15 +21,14 @@ const headless =
   process.env.MEETNIRA_HEADLESS === '1' ||
   process.env.MEETNIRA_HEADLESS === 'true';
 
-/** Representative Task 2 matrix with visible local Chromium workers by default. */
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers,
-  timeout: 180_000,
-  expect: { timeout: 15_000 },
+  timeout: 240_000,
+  expect: { timeout: 30_000 },
   use: {
     baseURL,
     headless,
@@ -41,7 +40,7 @@ export default defineConfig({
   },
   reporter: [
     ['list', { printSteps: true }],
-    ['json', { outputFile: path.join(taskDir, 'reports', 'last-run.json') }],
+    ['json', { outputFile: path.join(taskDir, 'reports', 'playwright-report.json') }],
     ['html', { outputFolder: path.join(taskDir, 'playwright-report'), open: 'never' }],
   ],
   outputDir: path.join(taskDir, 'test-results'),

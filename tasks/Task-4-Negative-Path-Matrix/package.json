@@ -1,0 +1,9 @@
+{
+  "name": "meetnira-task-4-negative-path-matrix",
+  "private": true,
+  "description": "Negative-path Donobu agent suite",
+  "scripts": {
+    "test": "MEETNIRA_TASK4_DIR=\"$PWD\" MEETNIRA_REPO_ROOT=\"$(cd ../.. && pwd)\" donobu test --config=playwright.config.ts",
+    "report": "playwright show-report playwright-report"
+  }
+}

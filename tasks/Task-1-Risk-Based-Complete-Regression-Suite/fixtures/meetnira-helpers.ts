@@ -1,14 +1,14 @@
-import type { Page } from '@playwright/test';
+import type { DonobuExtendedPage } from 'donobu';
 
 /** Opens Nira / MeetNira home; resilient to redirects. */
-export async function openMeetNiraHome(page: Page): Promise<void> {
+export async function openMeetNiraHome(page: DonobuExtendedPage): Promise<void> {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 }
 
 /**
  * Use **Try Practice for Free** only — do not automate Student/Mentor Login (OAuth).
  */
-export async function openSelectGradeViaFreePractice(page: Page): Promise<void> {
+export async function openSelectGradeViaFreePractice(page: DonobuExtendedPage): Promise<void> {
   await openMeetNiraHome(page);
   const primary = page.locator('[data-testid="button-try-practice"]');
   if ((await primary.count()) > 0) {

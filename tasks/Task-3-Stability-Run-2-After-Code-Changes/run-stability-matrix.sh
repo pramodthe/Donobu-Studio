@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
-# Task 2 — representative headed matrix, repeated for a small number of passes; reports stay in this folder
 set -euo pipefail
 TASK_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$TASK_DIR/../.." && pwd)"
-export MEETNIRA_TASK2_DIR="$TASK_DIR"
+export MEETNIRA_TASK3_DIR="$TASK_DIR"
 export MEETNIRA_REPO_ROOT="$REPO_ROOT"
 export MEETNIRA_HEADLESS="${MEETNIRA_HEADLESS:-0}"
-PASSES="${MEETNIRA_TASK2_PASSES:-2}"
+PASSES="${MEETNIRA_TASK3_PASSES:-2}"
 cd "$REPO_ROOT"
 mkdir -p "$TASK_DIR/reports/stability-raw"
 
 find "$TASK_DIR/reports/stability-raw" -maxdepth 1 -name 'run-*.json' -delete
 
 for ((i=1; i<=PASSES; i+=1)); do
-  echo "=== Task 2 matrix pass $i of $PASSES ==="
+  echo "=== Task 3 matrix pass $i of $PASSES ==="
   npx donobu test \
     --config "$TASK_DIR/playwright.config.ts" \
     --project=chromium || true

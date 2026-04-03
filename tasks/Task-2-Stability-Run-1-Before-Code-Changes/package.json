@@ -1,9 +1,11 @@
 {
   "name": "meetnira-task-2-stability-run-1",
   "private": true,
-  "description": "Five-run stability harness; outputs under ./reports (requires repo-root npm install)",
+  "description": "Representative headed stability matrix; outputs under ./reports (requires repo-root npm install)",
   "scripts": {
-    "stability:5x": "bash ./run-stability-5x.sh",
+    "stability:matrix": "bash ./run-stability-5x.sh",
+    "stability:matrix:headless": "MEETNIRA_HEADLESS=1 bash ./run-stability-5x.sh",
+    "stability:5x": "npm run stability:matrix",
     "stability:report": "node ./generate-stability-email-report.mjs",
     "report": "playwright show-report playwright-report"
   }
