@@ -6,6 +6,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
 HEADLESS="${MEETNIRA_HEADLESS:-0}"
+DEVICE_MODE="${MEETNIRA_DEVICE:-desktop}"
 OPEN_REPORTS=1
 
 TASK1_REPORT_PORT="${TASK1_REPORT_PORT:-9321}"
@@ -19,12 +20,15 @@ for arg in "$@"; do
     --headless)
       HEADLESS=1
       ;;
+    --mobile)
+      DEVICE_MODE=mobile
+      ;;
     --no-reports)
       OPEN_REPORTS=0
       ;;
     *)
       echo "Unknown option: $arg" >&2
-      echo "Usage: ./run.sh [--headless] [--no-reports]" >&2
+      echo "Usage: ./run.sh [--headless] [--mobile] [--no-reports]" >&2
       exit 1
       ;;
   esac
@@ -64,15 +68,15 @@ REPORT_PIDS=()
 trap cleanup EXIT
 
 if [[ "$HEADLESS" == "1" ]]; then
-  run_task "Task 1" env MEETNIRA_HEADLESS=1 npm test
-  run_task "Task 2" env MEETNIRA_HEADLESS=1 npm run stability:matrix
-  run_task "Task 3" env MEETNIRA_HEADLESS=1 npm run stability:after
-  run_task "Task 4" env MEETNIRA_HEADLESS=1 npm run test:task-4
+  run_task "Task 1" env MEETNIRA_HEADLESS=1 MEETNIRA_DEVICE="$DEVICE_MODE" npm test
+  run_task "Task 2" env MEETNIRA_HEADLESS=1 MEETNIRA_DEVICE="$DEVICE_MODE" npm run stability:matrix
+  run_task "Task 3" env MEETNIRA_HEADLESS=1 MEETNIRA_DEVICE="$DEVICE_MODE" npm run stability:after
+  run_task "Task 4" env MEETNIRA_HEADLESS=1 MEETNIRA_DEVICE="$DEVICE_MODE" npm run test:task-4
 else
-  run_task "Task 1" npm test
-  run_task "Task 2" npm run stability:matrix
-  run_task "Task 3" npm run stability:after
-  run_task "Task 4" npm run test:task-4
+  run_task "Task 1" env MEETNIRA_DEVICE="$DEVICE_MODE" npm test
+  run_task "Task 2" env MEETNIRA_DEVICE="$DEVICE_MODE" npm run stability:matrix
+  run_task "Task 3" env MEETNIRA_DEVICE="$DEVICE_MODE" npm run stability:after
+  run_task "Task 4" env MEETNIRA_DEVICE="$DEVICE_MODE" npm run test:task-4
 fi
 
 if [[ "$OPEN_REPORTS" != "1" ]]; then
@@ -83,6 +87,7 @@ fi
 
 echo
 echo "=== HTML Reports ==="
+echo "Device mode: $DEVICE_MODE"
 
 open_report \
   "Task 1" \

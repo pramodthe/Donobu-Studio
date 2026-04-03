@@ -1,7 +1,7 @@
 {
-  "name": "meetnira-task-3-stability-run-2",
+  "name": "meetnira-task-3-cookies-suite",
   "private": true,
-  "description": "Representative headed stability matrix after code changes",
+  "description": "Cookie and browser-state coverage for anonymous free-practice flows",
   "scripts": {
     "stability:after": "bash ./run-stability-matrix.sh",
     "stability:after:headless": "MEETNIRA_HEADLESS=1 bash ./run-stability-matrix.sh",

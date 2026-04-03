@@ -1,6 +1,6 @@
-# Task 3 — Stability Run #2 (After Code Changes)
+# Task 3 — Cookies And Browser-State Suite
 
-Runs the post-change Donobu Page.AI stability matrix across lower- and upper-grade flows. Local runs are headed by default and use 2 workers so multiple browser windows stay visible while Donobu Studio records the agent trace and assertions.
+Runs cookie and browser-state coverage for the anonymous free-practice experience. Local runs are headed by default and use 2 workers so browser windows remain visible while Donobu captures the flow and cookie report artifacts.
 
 ## Run
 
@@ -28,12 +28,10 @@ Override passes:
 MEETNIRA_TASK3_PASSES=3 npm run stability:after
 ```
 
-## Matrix scenarios
+## Scenarios
 
-- Grade 2 + Wonder Star → dashboard progress visible
-- Grade 1 + Sparkle → topic selection opens start-practice modal
-- Grade 6 + Cipher → middle-school dashboard loads topic cards
-- Grade 8 + Nova → standards picker opens from a topic
+- Privacy page discloses usage and preference data handling
+- Grade 1 anonymous free-practice flow writes local browser state and generates a cookie report
 
 ## Reports
 

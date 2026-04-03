@@ -1,6 +1,6 @@
 # MeetNira — Donobu agent regression
 
-End-to-end checks for [MeetNira](https://meetnira.com) using [Donobu](https://www.donobu.com). The active suites are Donobu Page.AI driven so Donobu Studio shows the browsing-agent steps, assertions, and logs. The repo is split into **Task 1** (core flows), **Task 2** (pre-change stability matrix), **Task 3** (post-change stability matrix), and **Task 4** (negative-path matrix).
+End-to-end checks for [MeetNira](https://meetnira.com) using [Donobu](https://www.donobu.com). The active suites are Donobu Page.AI driven so Donobu Studio shows the browsing-agent steps, assertions, and logs. The repo is split into **Task 1** (core flows), **Task 2** (pre-change stability matrix), **Task 3** (cookies and browser-state coverage), and **Task 4** (negative-path matrix).
 
 ---
 
@@ -29,6 +29,7 @@ End-to-end checks for [MeetNira](https://meetnira.com) using [Donobu](https://ww
 
    - `MEETNIRA_BASE_URL` — defaults to `https://meetnira.com`
    - `MEETNIRA_HEADLESS=1` — run without opening browser windows (default is **headed** locally)
+   - `MEETNIRA_DEVICE=mobile` — run the tasks using mobile emulation (`iPhone 13`) instead of desktop Chrome
    - In **CI**, browsers run **headless** automatically when `CI` is set.
 
 ---
@@ -46,7 +47,7 @@ All paths use **Try Practice for Free** only (no student/mentor login).
 
 Specs live in `tasks/Task-1-Risk-Based-Complete-Regression-Suite/tests/core-risk-regression.spec.ts`. Helpers are in `fixtures/`.
 
-### Task 2 — `tasks/Task-2-Stability-Run-1-Before-Code-Changes/`
+### Task 2 — `tasks/Task-2-Stability-Runs/`
 
 Runs a **headed Donobu Page.AI representative matrix** before code changes. It covers lower-grade and upper-grade flows instead of rerunning the same single path only. After each pass it saves JSON; at the end it builds a markdown **email-style** summary.
 
@@ -59,7 +60,12 @@ Representative scenarios:
 
 ### Task 3 — `tasks/Task-3-Stability-Run-2-After-Code-Changes/`
 
-Runs the same style of **headed Donobu Page.AI matrix after code changes** so you can compare post-change stability against the earlier run.
+Runs a **headed cookie and browser-state suite** for the anonymous free-practice journey.
+
+Task 3 scenarios:
+
+- Privacy page discloses usage and preference data handling
+- Grade 1 anonymous free-practice flow writes browser state and generates a cookie report
 
 ### Task 4 — `tasks/Task-4-Negative-Path-Matrix/`
 
@@ -92,6 +98,7 @@ This runs Task 1, Task 2, Task 3, and Task 4 in sequence using the active root s
 Options:
 
 - `./run.sh --headless` to run all tasks without visible browser windows
+- `./run.sh --mobile` to run all tasks with mobile emulation
 - `./run.sh --no-reports` to skip opening the HTML report servers
 
 Override ports if needed:
@@ -100,24 +107,37 @@ Override ports if needed:
 TASK1_REPORT_PORT=9401 TASK2_REPORT_PORT=9402 TASK3_REPORT_PORT=9403 TASK4_REPORT_PORT=9404 ./run.sh
 ```
 
+Run the same sequence on mobile:
+
+```bash
+./run.sh --mobile
+```
+
 ### Using npm (recommended)
 
 | Command | Description |
 |---------|-------------|
 | `npm test` | Run **Task 1** (2 tests). Browsers are **visible** by default. |
 | `npm run test:task-1` | Same as `npm test`. |
+| `npm run test:task-3` | Run **Task 3** cookies/browser-state suite. |
 | `npm run test:task-4` | Run **Task 4** negative-path matrix. |
 | `npm run test:headless` | Task 1 with **no** browser windows. |
 | `npm run stability:matrix` | **Task 2**: headed pre-change matrix + markdown summary. |
 | `npm run stability:matrix:headless` | Task 2 without visible browser windows. |
 | `npm run stability:5x` | Alias of `npm run stability:matrix`. |
-| `npm run stability:after` | **Task 3**: headed post-change matrix + markdown summary. |
+| `npm run stability:after` | **Task 3**: headed cookies/browser-state suite + markdown summary. |
 | `npm run stability:after:headless` | Task 3 without visible browser windows. |
 | `npm run stability:report` | Regenerate **only** the Task 2 markdown report from existing `run-*.json` files (no test run). |
 | `npm run report:task-1` | Open Task 1 HTML report. |
 | `npm run report:task-2` | Open Task 2 HTML report. |
 | `npm run report:task-3` | Open Task 3 HTML report. |
 | `npm run report:task-4` | Open Task 4 HTML report. |
+
+For any of these commands, prepend `MEETNIRA_DEVICE=mobile` to use mobile emulation. Example:
+
+```bash
+MEETNIRA_DEVICE=mobile npm run stability:after
+```
 
 ### From inside each task folder
 
@@ -164,6 +184,13 @@ Donobu wraps Playwright; use `npx donobu test` with this repo’s config and env
 export MEETNIRA_TASK1_DIR="$PWD/tasks/Task-1-Risk-Based-Complete-Regression-Suite"
 export MEETNIRA_REPO_ROOT="$PWD"
 npx donobu test --config=tasks/Task-1-Risk-Based-Complete-Regression-Suite/playwright.config.ts
+```
+
+**Mobile:**
+
+```bash
+MEETNIRA_DEVICE=mobile MEETNIRA_TASK1_DIR="$PWD/tasks/Task-1-Risk-Based-Complete-Regression-Suite" MEETNIRA_REPO_ROOT="$PWD" \
+  npx donobu test --config=tasks/Task-1-Risk-Based-Complete-Regression-Suite/playwright.config.ts
 ```
 
 **Headless:**
@@ -220,7 +247,7 @@ Or use npm: `npm run stability:matrix`.
 
 Task 2 is headed locally by default, so Donobu Studio and visible browser windows should show the agent actions and logs while the matrix runs.
 
-### Task 3 (post-change matrix)
+### Task 3 (cookies and browser-state suite)
 
 From repo root:
 
@@ -230,7 +257,7 @@ bash tasks/Task-3-Stability-Run-2-After-Code-Changes/run-stability-matrix.sh
 
 Or use npm: `npm run stability:after`.
 
-Task 3 is also headed locally by default, so you can watch the post-change Donobu agent matrix execute in visible browser windows.
+Task 3 is also headed locally by default, so you can watch the cookie and browser-state checks execute in visible browser windows.
 
 ### Task 4 (negative matrix)
 
@@ -319,7 +346,7 @@ Open `STABILITY_EMAIL_REPORT.md` in any editor or paste into email; regenerate w
 |--------|----------|
 | JSON per pass | `tasks/Task-3-Stability-Run-2-After-Code-Changes/reports/stability-raw/run-*.json` |
 | Latest single-run JSON | `tasks/Task-3-Stability-Run-2-After-Code-Changes/reports/last-run.json` |
-| Email-style summary | `tasks/Task-3-Stability-Run-2-After-Code-Changes/reports/STABILITY_EMAIL_REPORT.md` |
+| Cookies-suite summary | `tasks/Task-3-Stability-Run-2-After-Code-Changes/reports/STABILITY_EMAIL_REPORT.md` |
 | HTML | `tasks/Task-3-Stability-Run-2-After-Code-Changes/playwright-report/` |
 
 Open Task 3 HTML report:
@@ -354,7 +381,7 @@ npm run report:task-4
 | Run **one** Task 1 test (example) | `MEETNIRA_TASK1_DIR="$PWD/tasks/Task-1-Risk-Based-Complete-Regression-Suite" MEETNIRA_REPO_ROOT="$PWD" npx donobu test --config=tasks/Task-1-Risk-Based-Complete-Regression-Suite/playwright.config.ts -g "character customization"` |
 | Open **last** Task 1 HTML report | `npx playwright show-report tasks/Task-1-Risk-Based-Complete-Regression-Suite/playwright-report` |
 | Run Task 2 pre-change matrix | `npm run stability:matrix` |
-| Run Task 3 post-change matrix | `npm run stability:after` |
+| Run Task 3 cookies/browser-state suite | `npm run stability:after` |
 | Refresh summary only | `npm run stability:report` |
 | View Task 1 HTML report | `npm run report:task-1` |
 | View Task 2 HTML report | `npm run report:task-2` |

@@ -16,6 +16,10 @@ const parallelWorkers = Math.min(
 );
 
 const baseURL = process.env.MEETNIRA_BASE_URL ?? 'https://meetnira.com';
+const deviceMode = (process.env.MEETNIRA_DEVICE ?? 'desktop').toLowerCase();
+const isMobile = deviceMode === 'mobile';
+const projectName = isMobile ? 'mobile-chromium' : 'chromium';
+const devicePreset = isMobile ? devices['iPhone 13'] : devices['Desktop Chrome'];
 const isProductionTarget = /^https:\/\/meetnira\.com\/?$/i.test(baseURL);
 const configuredWorkers = Number(process.env.MEETNIRA_WORKERS);
 const workers =
@@ -58,8 +62,8 @@ export default defineConfig({
   outputDir: path.join(taskRoot, 'test-results'),
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'], headless },
+      name: projectName,
+      use: { ...devicePreset, headless },
     },
   ],
 });

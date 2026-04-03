@@ -10,9 +10,9 @@
   `tasks/Task-2-Stability-Run-1-Before-Code-Changes/`  
   Runs a **headed representative matrix** across lower- and upper-grade flows, writes `reports/stability-raw/run-*.json` and `reports/STABILITY_EMAIL_REPORT.md`.
 
-- **Task 3 — Stability Run #2 (After Code Changes)**  
+- **Task 3 — Cookies And Browser-State Suite**  
   `tasks/Task-3-Stability-Run-2-After-Code-Changes/`  
-  Runs the post-change headed Donobu matrix, writes `reports/stability-raw/run-*.json` and `reports/STABILITY_EMAIL_REPORT.md`.
+  Runs cookie and browser-state coverage for anonymous free-practice flows, writes `reports/stability-raw/run-*.json` and `reports/STABILITY_EMAIL_REPORT.md`.
 
 - **Task 4 — Negative Path Matrix**  
   `tasks/Task-4-Negative-Path-Matrix/`  
@@ -30,11 +30,12 @@ cp .env.example .env   # optional; set MEETNIRA_BASE_URL if not using production
 | Command | Purpose |
 |--------|---------|
 | `npm test` | Task 1 regression — **headed by default** (visible Chromium; one window per parallel worker) |
+| `npm run test:task-3` | Task 3 — cookies/browser-state suite |
 | `npm run test:task-4` | Task 4 negative-path matrix |
 | `npm run test:headless` | Task 1 without UI (`MEETNIRA_HEADLESS=1`) |
 | `npm run stability:matrix` | Task 2 — headed multi-scenario matrix + email summary |
 | `npm run stability:matrix:headless` | Task 2 without UI |
-| `npm run stability:after` | Task 3 — post-change headed matrix + email summary |
+| `npm run stability:after` | Task 3 — cookies/browser-state suite + email summary |
 | `npm run stability:after:headless` | Task 3 without UI |
 | `npm run stability:report` | Regenerate Task 2 email markdown from existing JSON |
 | `npm run report:task-1` | Open Task 1 HTML report |

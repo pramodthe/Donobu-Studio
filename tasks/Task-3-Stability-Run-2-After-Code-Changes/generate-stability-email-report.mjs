@@ -89,15 +89,15 @@ for (const r of present) {
 }
 
 const lines = [
-  '# Task 3 — MeetNira stability (after code changes)',
+  '# Task 3 — MeetNira cookies and browser-state suite',
   '',
   `Generated: ${new Date().toISOString()}`,
   '',
   '## Subject line suggestion',
   '',
-  `[MeetNira QA] Task 3 stability matrix — ${trend} — runs with data: ${present.length}`,
+  `[MeetNira QA] Task 3 cookies suite — ${trend} — runs with data: ${present.length}`,
   '',
-  '## Pass / fail counts per run (Chromium — Task 3 matrix)',
+  '## Pass / fail counts per run (Chromium — Task 3 cookies suite)',
   '',
   '| Run | Total results | Passed | Failed | Skipped | Interrupted / timedOut |',
   '|-----|---------------|--------|--------|---------|-------------------------|',

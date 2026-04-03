@@ -12,7 +12,7 @@ mkdir -p "$TASK_DIR/reports/stability-raw"
 find "$TASK_DIR/reports/stability-raw" -maxdepth 1 -name 'run-*.json' -delete
 
 for ((i=1; i<=PASSES; i+=1)); do
-  echo "=== Task 3 matrix pass $i of $PASSES ==="
+  echo "=== Task 3 cookies suite pass $i of $PASSES ==="
   npx donobu test \
     --config "$TASK_DIR/playwright.config.ts" \
     --project=chromium || true

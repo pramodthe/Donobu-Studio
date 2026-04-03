@@ -10,6 +10,10 @@ const repoRoot = process.env.MEETNIRA_REPO_ROOT ?? process.cwd();
 dotenv.config({ path: path.join(repoRoot, '.env') });
 
 const baseURL = process.env.MEETNIRA_BASE_URL ?? 'https://meetnira.com';
+const deviceMode = (process.env.MEETNIRA_DEVICE ?? 'desktop').toLowerCase();
+const isMobile = deviceMode === 'mobile';
+const projectName = isMobile ? 'mobile-chromium' : 'chromium';
+const devicePreset = isMobile ? devices['iPhone 13'] : devices['Desktop Chrome'];
 const configuredWorkers = Number(process.env.MEETNIRA_WORKERS);
 const workers =
   Number.isFinite(configuredWorkers) && configuredWorkers > 0
@@ -47,8 +51,8 @@ export default defineConfig({
   outputDir: path.join(taskDir, 'test-results'),
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'], headless },
+      name: projectName,
+      use: { ...devicePreset, headless },
     },
   ],
 });
